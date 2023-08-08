@@ -1,0 +1,118 @@
+# Setup r5r ---------------------------------------------------------------
+
+# allocate RAM memory to Java
+options(java.parameters = "-Xmx258G")
+
+# 1) build transport network, pointing to the path where OSM and GTFS data are stored
+library(r5r)
+library(dplyr)
+library(hrbrthemes)
+library(scales)
+library(qs)
+library(ggplot2)
+
+
+setwd('~/Final_thesis/Inputs')
+
+path <- c('~/Final_thesis/Inputs') 
+
+r5r_core <- setup_r5(data_path = path, elevation = "TOBLER",  verbose = FALSE, temp_dir=FALSE) 
+
+#Read DA centroids
+points_da <- read.csv('da_centroids.csv')
+names(points_da)[names(points_da) == 'GeoUID'] <- 'id'
+
+#Read building lots
+blds <- read.csv("Centroids_buildings_final.csv")
+
+#Read DMTI data
+dmti <- read.csv("dmti3.csv")
+
+#Read CT
+points_ct <- read.csv('ct_centroids.csv')
+
+#read transit stops
+stops <- read.csv("transit_stops.csv")
+stops_2 <- stops%>%distinct(shape_pt_l, shape_pt_1)
+stops_4 <- stops%>%distinct(shape_pt_l)
+
+transit<- stops_2%>%
+  rename(lon = shape_pt_1,
+         lat = shape_pt_l)
+
+transit$id <- seq.int(nrow(transit))
+
+dmti <- read.csv("dmti3.csv")
+
+
+
+#Calculate travel tima matrices
+
+#Set parameters
+mode <- c("WALK", "TRANSIT")
+max_walk_dist <-  1500  # meters
+max_trip_duration <-90 #minutes
+departure_datetime <- as.POSIXct("18-05-2022 10:00:00",
+                                 format = "%d-%m-%Y %H:%M:%S") #At 10 am 
+time_window <-60 #For every minute between 10:00 am to 11:00 am
+draws_per_minute <- 1L
+
+#Calculate for Census Tracts
+computation_time <- system.time(ttm_ct<-expanded_travel_time_matrix(r5r_core = r5r_core,
+                                                                   origins = points_ct,
+                                                                   destinations = points_ct,
+                                                                   mode = mode,
+                                                                   departure_datetime = departure_datetime,
+                                                                   max_walk_time = max_walk_time,
+                                                                   max_trip_duration = max_trip_duration,
+                                                                   walk_speed = 3.6,
+                                                                   draws_per_minute = draws_per_minute,
+                                                                   time_window = time_window,
+))
+print(paste(' travel time matrix computed in',computation_time[['elapsed']], 'seconds'))
+
+
+#Calculate for Dissemination Areas
+computation_time <- system.time(ttm_da<-expanded_travel_time_matrix(r5r_core = r5r_core,
+                                                                   origins = points_da,
+                                                                   destinations = points_da,
+                                                                   mode = mode,
+                                                                   departure_datetime = departure_datetime,
+                                                                   max_walk_time = max_walk_time,
+                                                                   max_trip_duration = max_trip_duration,
+                                                                   walk_speed = 3.6,
+                                                                   draws_per_minute = draws_per_minute,
+                                                                   time_window = time_window,
+))
+print(paste(' travel time matrix computed in',computation_time[['elapsed']], 'seconds'))
+
+
+#Calculate for building lots and supermarkets
+computation_time <- system.time(ttm_bld_10am<-expanded_travel_time_matrix(r5r_core = r5r_core,
+                                                                   origins = buildings,
+                                                                   destinations = dmti,
+                                                                   mode = mode,
+                                                                   departure_datetime = departure_datetime,
+                                                                   max_walk_time = max_walk_time,
+                                                                   max_trip_duration = max_trip_duration,
+                                                                   walk_speed = 3.6,
+                                                                   draws_per_minute = draws_per_minute,
+                                                                   time_window = time_window,
+))
+print(paste(' travel time matrix computed in',computation_time[['elapsed']], 'seconds'))
+
+
+#Measure accessibility at a building lot level
+acc_bld_10am <- ttm_bld_10am%>%
+  filter(total_time < 30, na.rm=TRUE)%>%
+  group_by(departure_time)%>%
+  count(from_id)
+
+
+acc_bld_10am_sum <- acc_bld_10am%>%
+  group_by(from_id, departure_time)%>%
+  summarise(minute_day_sum = sum(n))
+
+
+
+

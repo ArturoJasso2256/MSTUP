@@ -102,8 +102,70 @@ computation_time <- system.time(ttm_bld_10am<-expanded_travel_time_matrix(r5r_co
 print(paste(' travel time matrix computed in',computation_time[['elapsed']], 'seconds'))
 
 
+a <- c("10:00:00", "10:01:00", "10:02:00", "10:03:00", "10:04:00", "10:05:00", "10:06:00", "10:07:00", "10:08:00", "10:09:00", "10:10:00",
+       "10:11:00", "10:12:00", "10:13:00", "10:14:00", "10:15:00", "10:16:00", "10:17:00", "10:18:00", "10:19:00", "10:20:00",
+       "10:21:00", "10:22:00", "10:23:00", "10:24:00", "10:25:00", "10:26:00", "10:27:00", "10:28:00", "10:29:00", "10:30:00",
+       "10:31:00", "10:32:00", "10:33:00", "10:34:00", "10:35:00", "10:36:00", "10:37:00", "10:38:00", "10:39:00", "10:40:00",
+       "10:41:00", "10:42:00", "10:43:00", "10:44:00", "10:45:00", "10:46:00", "10:47:00", "10:48:00", "10:49:00", "10:50:00",
+       "10:51:00", "10:52:00", "10:53:00", "10:54:00", "10:55:00", "10:56:00", "10:57:00", "10:58:00", "10:59:00" )
+
+b <- c("10:00:00", "10:05:00", "10:10:00",
+       "10:15:00", "10:20:00",
+       "10:25:00", "10:30:00",
+       "10:35:00", "10:40:00",
+       "10:45:00", "10:50:00",
+       "10:55:00")
+
+c <- c("10:00:00", 
+       "10:10:00",
+       "10:20:00",
+       "10:30:00",
+       "10:40:00",
+       "10:50:00")
+
+d <- c("10:00:00", 
+       "10:20:00",
+       "10:40:00")
+
+e <- c("10:00:00", 
+       "10:30:00")
+
+
+f <- c("10:00:00")
+
+a2 <- c("08:00:00", "08:01:00", "08:02:00", "08:03:00", "08:04:00", "08:05:00", "08:06:00", "08:07:00", "08:08:00", "08:09:00", "08:10:00",
+        "08:11:00", "08:12:00", "08:13:00", "08:14:00", "08:15:00", "08:16:00", "08:17:00", "08:18:00", "08:19:00", "08:20:00",
+        "08:21:00", "08:22:00", "08:23:00", "08:24:00", "08:25:00", "08:26:00", "08:27:00", "08:28:00", "08:29:00", "08:30:00",
+        "08:31:00", "08:32:00", "08:33:00", "08:34:00", "08:35:00", "08:36:00", "08:37:00", "08:38:00", "08:39:00", "08:40:00",
+        "08:41:00", "08:42:00", "08:43:00", "08:44:00", "08:45:00", "08:46:00", "08:47:00", "08:48:00", "08:49:00", "08:50:00",
+        "08:51:00", "08:52:00", "08:53:00", "08:54:00", "08:55:00", "08:56:00", "08:57:00", "08:58:00", "08:59:00" )
+
+b2<- c("08:00:00", "08:05:00", "08:10:00",
+       "08:15:00", "08:20:00",
+       "08:25:00", "08:30:00",
+       "08:35:00", "08:40:00",
+       "08:45:00", "08:50:00",
+       "08:55:00")
+
+c2 <- c("08:00:00", 
+        "08:10:00",
+        "08:20:00",
+        "08:30:00",
+        "08:40:00",
+        "08:50:00")
+
+d2 <- c("08:00:00", 
+        "08:20:00",
+        "08:40:00")
+
+e2 <- c("08:00:00", 
+        "08:30:00")
+
+f2 <- c("08:00:00")
+
+
 #Measure accessibility at a building lot level
-acc_bld_10am <- ttm_bld_10am%>%
+acc_bld_min_day <- ttm_bld_10am%>%
   filter(total_time < 30, na.rm=TRUE)%>%
   group_by(departure_time)%>%
   count(from_id)
@@ -113,6 +175,428 @@ acc_bld_10am_sum <- acc_bld_10am%>%
   group_by(from_id, departure_time)%>%
   summarise(minute_day_sum = sum(n))
 
+acc_bld_10_min <- acc_bld_min_day%>%
+  filter(departure_time %in% a)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_10_min = sum(n)/60)
+
+acc_bld_10_5min <- acc_bld_min_day%>%
+  filter(departure_time %in% b)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_10_5min = sum(n)/12)
+
+acc_bld_10_10min <- acc_bld_min_day%>%
+  filter(departure_time %in% c)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_10_10min = sum(n)/6)
+
+acc_bld_10_20min <- acc_bld_min_day%>%
+  filter(departure_time %in% d)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_10_20min = sum(n)/3)
+
+acc_bld_10_30min <- acc_bld_min_day%>%
+  filter(departure_time %in% e)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_10_30min= sum(n)/2)
+
+acc_bld_10_60min <- acc_bld_min_day%>%
+  filter(departure_time %in% f)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_10_60min  = sum(n)/1)
 
 
+acc_bld_08_min <- acc_bld_min_day%>%
+  filter(departure_time %in% a2)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_08_min = sum(n)/60)
+
+acc_bld_08_5min <- acc_bld_min_day%>%
+  filter(departure_time %in% b2)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_08_5min = sum(n)/12)
+
+acc_bld_08_10min <- acc_bld_min_day%>%
+  filter(departure_time %in% c2)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_08_10min = sum(n)/6)
+
+acc_bld_08_20min <- acc_bld_min_day%>%
+  filter(departure_time %in% d2)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_08_20min = sum(n)/3)
+
+acc_bld_08_30min <- acc_bld_min_day%>%
+  filter(departure_time %in% e2)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_08_30min = sum(n)/2)
+
+acc_bld_08_60min <- acc_bld_min_day%>%
+  filter(departure_time %in% f2)%>%
+  group_by(from_id)%>%
+  summarise(acc_bld_08_60min  = sum(n)/1)
+
+
+
+
+#Census tracts
+#Read count of supermarkets at a CT level
+qread("sp_ct_count.qs") -> sp_ct_count
+
+ttm_ct$to_id <- as.numeric(ttm_ct$to_id)
+sp_ct_count$to_id <- as.numeric(sp_ct_count$to_id)
+
+acc_ct_day_minute<- merge(ttm_ct, sp_ct_count, by = "to_id", all.x =TRUE)
+acc_ct_day_minute <- acc_ct_day_minute%>%
+  filter(total_time <30, na.rm=TRUE)
+acc_ct_10_min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% a)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_10_min= sum(suma, na.rm=TRUE)/60)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_10_5min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% b)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_10_5min= sum(suma, na.rm=TRUE)/12)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_10_10min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% c)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_10_10min= sum(suma, na.rm=TRUE)/6)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_10_20min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% d)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_10_20min= sum(suma, na.rm=TRUE)/3)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_10_30min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% e)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_10_30min= sum(suma, na.rm=TRUE)/2)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_10_60min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% f)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_10_60min= sum(suma, na.rm=TRUE)/1)%>%
+  rename(GeoUIDCT = from_id)
+
+
+acc_ct_08_min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% a2)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_08_min= sum(suma, na.rm=TRUE)/60)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_08_5min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% b2)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_08_5min= sum(suma, na.rm=TRUE)/12)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_08_10min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% c2)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_08_10min= sum(suma, na.rm=TRUE)/6)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_08_20min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% d2)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_08_20min= sum(suma, na.rm=TRUE)/3)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_08_30min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% e2)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_08_30min= sum(suma, na.rm=TRUE)/2)%>%
+  rename(GeoUIDCT = from_id)
+
+acc_ct_08_60min  <-acc_ct_day_minute%>%
+  filter(departure_time %in% f2)%>%
+  group_by(from_id)%>%
+  summarise(acc_ct_08_60min= sum(suma, na.rm=TRUE)/1)%>%
+  rename(GeoUIDCT = from_id)
+
+
+#Dissemination areas
+#Read supermarkets aggregated at a DA level
+qread("sp_da_count.qs")   -> sp_da_count
+acc_da_day_minute<- merge(ttm_da, sp_da_count, by = "to_id", all.x=TRUE)
+acc_da_day_minute <- acc_da_day_minute%>%
+  filter(total_time <30, na.rm=TRUE)
+#das
+acc_da_10_min  <-acc_da_day_minute%>%
+  filter(departure_time %in% a)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_10_min = sum(suma, na.rm=TRUE)/60)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_10_5min  <-acc_da_day_minute%>%
+  filter(departure_time %in% b)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_10_5min= sum(suma, na.rm=TRUE)/12)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_10_10min  <-acc_da_day_minute%>%
+  filter(departure_time %in% c)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_10_10min= sum(suma, na.rm=TRUE)/6)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_10_20min  <-acc_da_day_minute%>%
+  filter(departure_time %in% d)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_10_20min= sum(suma, na.rm=TRUE)/3)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_10_30min  <-acc_da_day_minute%>%
+  filter(departure_time %in% e)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_10_30min= sum(suma, na.rm=TRUE)/2)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_10_60min  <-acc_da_day_minute%>%
+  filter(departure_time %in% f)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_10_60min= sum(suma, na.rm=TRUE)/1)%>%
+  rename(GeoUIDDA = from_id)
+
+
+acc_da_08_min  <-acc_da_day_minute%>%
+  filter(departure_time %in% a2)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_08_min= sum(suma, na.rm=TRUE)/60)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_08_5min  <-acc_da_day_minute%>%
+  filter(departure_time %in% b2)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_08_5min= sum(suma, na.rm=TRUE)/12)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_08_10min  <-acc_da_day_minute%>%
+  filter(departure_time %in% c2)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_08_10min= sum(suma, na.rm=TRUE)/6)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_08_20min  <-acc_da_day_minute%>%
+  filter(departure_time %in% d2)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_08_20min= sum(suma, na.rm=TRUE)/3)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_08_30min  <-acc_da_day_minute%>%
+  filter(departure_time %in% e2)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_08_30min= sum(suma, na.rm=TRUE)/2)%>%
+  rename(GeoUIDDA = from_id)
+
+acc_da_08_60min  <-acc_da_day_minute%>%
+  filter(departure_time %in% f2)%>%
+  group_by(from_id)%>%
+  summarise(acc_da_08_60min= sum(suma, na.rm=TRUE)/1)%>%
+  rename(GeoUIDDA = from_id)
+
+
+
+#Merge all
+acc_blds_final <- merge(acc_blds_final, acc_bld_10_min,   by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_10_5min,  by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_10_10min, by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_10_20min, by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_10_30min, by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_10_60min, by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_08_min,   by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_08_5min,  by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_08_10min, by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_08_20min, by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_08_30min, by="from_id", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_bld_08_60min, by="from_id", all.x=TRUE)
+acc_blds_final <- acc_blds_final %>%mutate_all(funs(ifelse(is.na(.), 0, .)))
+
+acc_blds_final <- merge(acc_blds_final, acc_da_10_min,   by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_10_5min,  by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_10_10min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_10_20min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_10_30min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_10_60min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_08_min,   by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_08_5min,  by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_08_10min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_08_20min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_08_30min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_da_08_60min, by="GeoUIDDA", all.x=TRUE)
+acc_blds_final <- acc_blds_final %>%mutate_all(funs(ifelse(is.na(.), 0, .)))
+
+acc_blds_final$da_hour_day_prom.x <- NULL
+acc_blds_final$da_hour_day_prom.y <- NULL
+
+acc_blds_final$GeoUIDCT<-as.numeric(acc_blds_final$GeoUIDCT)
+acc_blds_final <- merge(acc_blds_final, acc_ct_10_min,   by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_10_5min,  by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_10_10min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_10_20min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_10_30min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_10_60min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_08_min,   by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_08_5min,  by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_08_10min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_08_20min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_08_30min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- merge(acc_blds_final, acc_ct_08_60min, by="GeoUIDCT", all.x=TRUE)
+acc_blds_final <- acc_blds_final %>%mutate_all(funs(ifelse(is.na(.), 0, .)))
+
+
+
+
+#Create new variables
+#Calculate the misestimation of accessibility to supermarkets
+acc_blds_final <- acc_blds_final%>%
+  mutate( #building lots
+per_bld_10_5min_min = case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_10_5min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_10_5min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_10_10min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_10_10min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_10_10min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_10_20min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_10_20min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_10_20min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_10_30min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_10_30min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_10_30min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_10_60min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_10_60min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_10_60min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         
+         per_bld_08_min_min = case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_08_min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                        acc_bld_10_min > 0 ~ 100*((acc_bld_08_min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_08_5min_min = case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_08_5min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_08_5min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_08_10min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_08_10min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_08_10min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_08_20min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_08_20min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_08_20min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_08_30min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_08_30min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_08_30min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_bld_08_60min_min= case_when(acc_bld_10_min ==0 ~ 100*((acc_bld_08_60min-acc_bld_10_min)/(acc_bld_10_min + 1)),
+                                         acc_bld_10_min > 0 ~ 100*((acc_bld_08_60min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+    
+    #Census tracts
+    
+         per_ct_bld_10_min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_ct_10_min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                           acc_bld_10_min > 0  ~ 100*((acc_ct_10_min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+         per_ct_bld_10_5min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_ct_10_5min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                            acc_bld_10_min > 0  ~ 100*((acc_ct_10_5min-acc_bld_10_min)/(acc_bld_10_min))),
+         
+         per_ct_bld_10_10min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_10_10min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                            acc_bld_10_min > 0  ~ 100*((acc_ct_10_10min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+         per_ct_bld_10_20min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_10_20min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                            acc_bld_10_min > 0  ~ 100*((acc_ct_10_20min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+         per_ct_bld_10_30min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_10_30min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                            acc_bld_10_min > 0  ~ 100*((acc_ct_10_30min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+         per_ct_bld_10_60min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_10_60min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                            acc_bld_10_min > 0  ~ 100*((acc_ct_10_60min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+         
+    per_ct_bld_08_min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_ct_08_min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                      acc_bld_10_min > 0  ~ 100*((acc_ct_08_min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_ct_bld_08_5min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_ct_08_5min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_ct_08_5min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_ct_bld_08_10min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_08_10min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_ct_08_10min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_ct_bld_08_20min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_08_20min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_ct_08_20min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_ct_bld_08_30min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_08_30min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_ct_08_30min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_ct_bld_08_60min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_ct_08_60min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_ct_08_60min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    
+    #Dissemination areas
+    
+    per_da_bld_10_min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_da_10_min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                      acc_bld_10_min > 0  ~ 100*((acc_da_10_min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_10_5min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_da_10_5min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_10_5min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_10_10min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_10_10min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_10_10min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_10_20min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_10_20min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_10_20min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_10_30min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_10_30min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_10_30min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_10_60min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_10_60min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_10_60min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    
+    per_da_bld_08_min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_da_08_min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                      acc_bld_10_min > 0  ~ 100*((acc_da_08_min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_08_5min_min = case_when(acc_bld_10_min ==0 ~  100*((acc_da_08_5min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_08_5min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_08_10min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_08_10min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_08_10min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_08_20min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_08_20min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_08_20min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_08_30min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_08_30min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_08_30min-acc_bld_10_min)/(acc_bld_10_min))),
+    
+    per_da_bld_08_60min_min =case_when(acc_bld_10_min ==0 ~  100*((acc_da_08_60min-acc_bld_10_min)/(acc_bld_10_min+ 1)),
+                                       acc_bld_10_min > 0  ~ 100*((acc_da_08_60min-acc_bld_10_min)/(acc_bld_10_min))),
+
+#Income variables
+Inc_group_DA2 = case_when(Income_DA < 40000 ~ "Low",
+                                   Income_DA >= 40000 ~ "High"),
+         Inc_group_CT2 = case_when(Income_CT < 40000 ~ "Low",
+                                   Income_CT >= 40000 ~ "High"),
+   
+  ) 
+
+acc_blds_final_categories<-acc_blds_final%>%
+  mutate(across(starts_with("per"), ~ case_when(. == 0 ~ "0%",
+                                                . <= 1  &  .  > 0       ~ "0 to 1   %",
+                                                . > 1   &  .  <= 5      ~ "1 to 5   %",
+                                                . > 5  &  .  <= 25      ~ "5 to 25 %",
+                                                . > 25  &  .  <= 50     ~ "25 to 50 %",
+                                                . > 50  &  .  <= 100    ~ "50 to 100 %",
+                                                . > 100                 ~ "More than 100%",
+                                                . <  0  &   .  >= -1    ~ "0 to -1   %",
+                                                . < -1   &  .  >= -5    ~ "- 1 to  - 5   %",
+                                                . < -5  &  .  >= -25    ~ "-5  to - 25 %",
+                                                . < -25  &  .  >= -50   ~ "- 25 to - 50 %",
+                                                . < -50  &  .  >= -100  ~ "- 50 to - 100 %",
+                                                . < -100                ~ "Less  than 100%"
+  )))
+
+
+#The rest of the analysis was made on other 
 
